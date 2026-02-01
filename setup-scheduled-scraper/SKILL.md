@@ -48,6 +48,33 @@ project/
 - Support overriding the output path via `SCRAPE_RESULTS_PATH`.
 - Store run metadata in `scraper-metadata.json` (timestamp, counts, errors).
 
+## Example JSON
+
+results.json (array of records):
+
+```json
+[
+  {
+    "url": "https://example.com/scoreboard/some-unique-id",
+    "title": "Knicks at Lakers",
+    "game_start_time": "2026-02-01T19:00:00-08:00",
+    "scraped_at": "2026-02-01T07:00:12-08:00"
+  },
+  {
+    "url": "https://example.com/scoreboard/some-unique-id-2",
+    "title": "Bucks at Warriors",
+    "game_start_time": "2026-02-01T21:30:00-08:00",
+    "scraped_at": "2026-02-01T07:00:12-08:00"
+  }
+]
+```
+
+scraper-metadata.json:
+
+```json
+{"last_scraped_at": "2026-02-01T07:00:12-08:00"}
+```
+
 ## Scheduling (macOS launchd)
 - Use a LaunchAgent to run a wrapper script at scheduled times.
 - Keep the LaunchAgent plist in the repo and **symlink** it into `~/Library/LaunchAgents`.
