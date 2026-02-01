@@ -9,6 +9,33 @@ description: Set up a local Playwright + Next.js scraper project with scheduled 
 Build a local, scheduled scraper that runs via Playwright and writes JSON results, with an optional Next.js viewer for tables/charts. Default stack: TypeScript, Playwright test runner, Next.js App Router, Tailwind v4, Shadcn UI, and launchd scheduling.
 
 ## Workflow
+
+## Example Project Structure
+
+```
+project/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx            # Next.js root layout
+│   │   └── page.tsx              # Viewer entry page
+│   ├── lib/                      # Viewer helpers
+│   ├── scraper.ts                # Playwright entry (called by test spec)
+│   └── scrape.spec.ts            # Playwright spec that invokes scraper
+├── scripts/
+│   ├── run_scrape_daily.sh       # Scheduled wrapper (logs + npm run scrape)
+│   ├── update-schedule.sh        # Updates launchd schedule times
+│   └── schedule-wakes.sh         # Optional pmset wake scheduling
+├── src/launchd/
+│   ├── com.example.scraper.plist       # LaunchAgent schedule
+│   └── com.example.scraper-wake.plist  # LaunchDaemon wake helper
+├── results.json                  # Scheduled output (read-only)
+├── results-local.json            # Manual run output
+├── scraper-metadata.json         # Run metadata
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
 1) Intake the request (read `references/intake.md`).
 2) Scaffold the project (Next.js app + Playwright + TypeScript).
 3) Implement the scraper pipeline (URLs -> parsed data -> JSON).
