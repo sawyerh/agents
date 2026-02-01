@@ -6,9 +6,17 @@ description: Set up a local Playwright + Next.js scraper project with scheduled 
 # Setup Scheduled Scraper
 
 ## Overview
+
 Build a local, scheduled scraper that runs via Playwright and writes JSON results, with an optional Next.js viewer for tables/charts. Default stack: TypeScript, Playwright test runner, Next.js App Router, Tailwind v4, Shadcn UI, and launchd scheduling.
 
 ## Workflow
+
+1. Intake the request (read `references/intake.md`).
+2. Scaffold the project (Next.js app + Playwright + TypeScript).
+3. Implement the scraper pipeline (URLs -> parsed data -> JSON).
+4. Add the optional viewer (read-only).
+5. Add scheduling + logging with launchd.
+6. Verify manual run, schedule, and viewer.
 
 ## Example Project Structure
 
@@ -36,14 +44,24 @@ project/
 └── README.md
 ```
 
-1) Intake the request (read `references/intake.md`).
-2) Scaffold the project (Next.js app + Playwright + TypeScript).
-3) Implement the scraper pipeline (URLs -> parsed data -> JSON).
-4) Add the optional viewer (read-only).
-5) Add scheduling + logging with launchd.
-6) Verify manual run, schedule, and viewer.
+### Example system architecture
+
+```mermaid
+flowchart TB
+  LaunchDaemon["LaunchDaemon (wake scheduler)"] --> pmset["pmset wake events"]
+  pmset --> LaunchAgent
+  LaunchAgent["LaunchAgent (twice daily)"] --> Runner["scripts/run_playwright_daily.sh"]
+  Runner --> Scrape["npm run scrape (Playwright)"]
+  Scrape --> Results["results.json"]
+  Scrape --> Metadata["scraper-metadata.json"]
+  Results --> Viewer["Next.js web app"]
+  Metadata --> Viewer
+  Viewer --> Vercel
+  Vercel --> User
+```
 
 ## Data conventions
+
 - Use `results.json` for scheduled runs; use `results-local.json` for manual runs.
 - Support overriding the output path via `SCRAPE_RESULTS_PATH`.
 - Store run metadata in `scraper-metadata.json` (timestamp, counts, errors).
@@ -72,10 +90,11 @@ results.json (array of records):
 scraper-metadata.json:
 
 ```json
-{"last_scraped_at": "2026-02-01T07:00:12-08:00"}
+{ "last_scraped_at": "2026-02-01T07:00:12-08:00" }
 ```
 
 ## Scheduling (macOS launchd)
+
 - Use a LaunchAgent to run a wrapper script at scheduled times.
 - Keep the LaunchAgent plist in the repo and **symlink** it into `~/Library/LaunchAgents`.
 - Wrapper script sets `PATH`, logs JSON lines to `~/Library/Logs`, and runs `npm run scrape`.
@@ -84,21 +103,25 @@ scraper-metadata.json:
 - Provide an `update-schedule.sh` helper to edit `StartCalendarInterval` with two daily times. If more than two times are needed, ask before expanding the schedule logic.
 
 ## Multi-project notes
+
 - Ensure each project has a unique LaunchAgent label and plist filename.
 - Use distinct log file paths per project.
 - If using a wake LaunchDaemon, give it a unique label and owner tag.
 
 ## Viewer guidelines
+
 - Use Next.js App Router and keep the UI read-only.
 - Prefer Shadcn components and Tailwind defaults; avoid extra overrides.
 - Derive filtered subsets once, then compute metrics/views from those subsets.
 
 ## Verification
+
 - Manual run: `npm run scrape` (and `npm run scrape:ui` for Playwright UI).
 - Viewer: `npm run dev`.
 - Schedule checks: `launchctl list` and `pmset -g sched`.
 - Logs: `tail -n 200 ~/Library/Logs/<project>.out.log ~/Library/Logs/<project>.err.log`.
 
 ## References
+
 - `references/intake.md`
 - `references/checklists.md`
