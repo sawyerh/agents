@@ -2,7 +2,8 @@
 
 ## Project scaffold
 - Create `package.json` with scripts: `dev`, `build`, `start`, `lint`, `typecheck`, `test`, `scrape`, `scrape:ui`.
-- Install Next.js, React, TypeScript, Tailwind v4, Shadcn, Playwright.
+- Install TypeScript and Playwright
+- If a web app is required: install Next.js, React, Tailwind v4, Shadcn, 
 - Add `results.json`, `results-local.json`, and `scraper-metadata.json`.
 - Configure `tsconfig.json` and `eslint`.
 
@@ -13,7 +14,7 @@
 - Keep manual runs writing to `results-local.json`.
 
 ## Optional viewer
-- Next.js App Router page that reads JSON and renders a table.
+- Next.js App Router page that reads JSON and renders a UI for viewing the results.
 - Add filters and charts only if requested.
 - Keep state derivations simple and centralized.
 
