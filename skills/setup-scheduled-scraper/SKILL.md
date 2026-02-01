@@ -26,6 +26,9 @@ project/
 │   ├── app/
 │   │   ├── layout.tsx            # Next.js root layout
 │   │   └── page.tsx              # Viewer entry page
+│   ├── launchd/
+│   │   ├── com.example.scraper.plist       # LaunchAgent schedule
+│   │   └── com.example.scraper-wake.plist  # LaunchDaemon wake helper
 │   ├── lib/                      # Viewer helpers
 │   ├── scraper.ts                # Playwright entry (called by test spec)
 │   └── scrape.spec.ts            # Playwright spec that invokes scraper
@@ -33,9 +36,6 @@ project/
 │   ├── run_scrape_daily.sh       # Scheduled wrapper (logs + npm run scrape)
 │   ├── update-schedule.sh        # Updates launchd schedule times
 │   └── schedule-wakes.sh         # Optional pmset wake scheduling
-├── src/launchd/
-│   ├── com.example.scraper.plist       # LaunchAgent schedule
-│   └── com.example.scraper-wake.plist  # LaunchDaemon wake helper
 ├── results.json                  # Scheduled output (read-only)
 ├── results-local.json            # Manual run output
 ├── scraper-metadata.json         # Run metadata
