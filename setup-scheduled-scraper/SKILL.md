@@ -50,9 +50,16 @@ project/
 
 ## Scheduling (macOS launchd)
 - Use a LaunchAgent to run a wrapper script at scheduled times.
+- Keep the LaunchAgent plist in the repo and **symlink** it into `~/Library/LaunchAgents`.
 - Wrapper script sets `PATH`, logs JSON lines to `~/Library/Logs`, and runs `npm run scrape`.
 - If the user wants wake-from-sleep, add a LaunchDaemon + `pmset schedule wakeorpoweron` helper.
+- For wake scheduling, copy the LaunchDaemon plist into `/Library/LaunchDaemons` (not a symlink) and set ownership to `root:wheel`.
 - Provide an `update-schedule.sh` helper to edit `StartCalendarInterval` with two daily times. If more than two times are needed, ask before expanding the schedule logic.
+
+## Multi-project notes
+- Ensure each project has a unique LaunchAgent label and plist filename.
+- Use distinct log file paths per project.
+- If using a wake LaunchDaemon, give it a unique label and owner tag.
 
 ## Viewer guidelines
 - Use Next.js App Router and keep the UI read-only.
