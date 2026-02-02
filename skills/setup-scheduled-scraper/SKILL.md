@@ -33,7 +33,8 @@ project/
 │   ├── scraper.ts                # Playwright entry (called by test spec)
 │   └── scrape.spec.ts            # Playwright spec that invokes scraper
 ├── scripts/
-│   ├── run_scrape_daily.sh       # Scheduled wrapper (logs + npm run scrape)
+│   ├── clear_logs.sh             # Clears scheduler logs
+│   ├── run_playwright_daily.sh   # Scheduled wrapper (logs + npm run scrape)
 │   ├── update-schedule.sh        # Updates launchd schedule times
 │   └── schedule-wakes.sh         # Optional pmset wake scheduling
 ├── results.json                  # Scheduled output (read-only)
@@ -95,9 +96,9 @@ scraper-metadata.json:
 
 ## Scheduling (macOS launchd)
 
-- Use a LaunchAgent to run a wrapper script at scheduled times.
+- Start from the shell scripts in `scripts/` and customize them for the project (`PROJECT_SLUG`, paths, labels).
+- Use a LaunchAgent to run the wrapper script at scheduled times.
 - Keep the LaunchAgent plist in the repo and **symlink** it into `~/Library/LaunchAgents`.
-- Wrapper script sets `PATH`, logs JSON lines to `~/Library/Logs`, and runs `npm run scrape`.
 - If the user wants wake-from-sleep, add a LaunchDaemon + `pmset schedule wakeorpoweron` helper.
 - For wake scheduling, copy the LaunchDaemon plist into `/Library/LaunchDaemons` (not a symlink) and set ownership to `root:wheel`.
 - Provide an `update-schedule.sh` helper to edit `StartCalendarInterval` with two daily times. If more than two times are needed, ask before expanding the schedule logic.
